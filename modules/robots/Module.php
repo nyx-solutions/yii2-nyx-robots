@@ -20,7 +20,7 @@
         /**
          * @var string
          */
-        public $viewPath = '@nox-robots-webroot/views';
+        public $viewPath = '@nox-it/robots/views';
 
         /**
          * @var string
@@ -30,7 +30,7 @@
         /**
          * @var string
          */
-        public $defaultRoute = 'robots/index';
+        public $defaultRoute = 'default/index';
 
         /**
          * @var array
@@ -44,7 +44,7 @@
             'disallowAllRobots' => false,
             'allowAllRobots'    => false,
             'useSitemap'        => true,
-            'sitemapFile'       => 'sitemap.xml',
+            'sitemapFile'       => '/sitemap.xml',
             'robots'            => [],
             'allowRules'        => [],
             'disallowRules'     => []
@@ -104,7 +104,7 @@
         {
             parent::init();
 
-            \Yii::setAlias('@nox-robots-webroot', __DIR__);
+            \Yii::setAlias('@nox-it/robots', __DIR__);
 
             $this->verifyComponentRequirements();
         }
@@ -155,9 +155,35 @@
             }
 
             if (!$this->allowAllRobots && !$this->disallowAllRobots) {
-                if (is_array($this->settings['robots']) && count($this->settings['robots']) > 0) {
-                    foreach ($this->settings['robots'] as $robot) {
-                        $this->addRobot($robot);
+                if (is_array($this->settings['allowRules']) && count($this->settings['allowRules']) > 0) {
+                    foreach ($this->settings['allowRules'] as $robot => $rules) {
+                        $robotId = $this->getRobotId($robot);
+
+                        if (!isset($this->allowRules[$robotId]) || !is_array($this->allowRules[$robotId])) {
+                            $this->allowRules[$robotId] = [];
+                        }
+
+                        if (is_array($rules) && count($rules) > 0) {
+                            foreach ($rules as $rule) {
+                                $this->allowRules[$robotId][] = $rule;
+                            }
+                        }
+                    }
+                }
+
+                if (is_array($this->settings['disallowRules']) && count($this->settings['disallowRules']) > 0) {
+                    foreach ($this->settings['disallowRules'] as $robot => $rules) {
+                        $robotId = $this->getRobotId($robot);
+
+                        if (!isset($this->disallowRules[$robotId]) || !is_array($this->disallowRules[$robotId])) {
+                            $this->disallowRules[$robotId] = [];
+                        }
+
+                        if (is_array($rules) && count($rules) > 0) {
+                            foreach ($rules as $rule) {
+                                $this->disallowRules[$robotId][] = $rule;
+                            }
+                        }
                     }
                 }
             }
@@ -182,10 +208,10 @@
          */
         public function addRobot($robot)
         {
-            $id = StringHelper::asSlug($robot);
+            $robotId = $this->getRobotId($robot);
 
-            if (!isset($this->robots[$id])) {
-                $this->robots[$id] = $robot;
+            if (!isset($this->robots[$robotId])) {
+                $this->robots[$robotId] = $robot;
             }
 
             return $this;
@@ -207,7 +233,7 @@
          */
         public function addAllowRule($path, $robot)
         {
-            $robotId = StringHelper::asSlug($robot);
+            $robotId = $this->getRobotId($robot);
 
             if ($this->robotExists($robot)) {
                 if (!isset($this->allowRules[$robotId]) || !is_array($this->allowRules[$robotId])) {
@@ -238,7 +264,7 @@
          */
         public function addDisallowRule($path, $robot)
         {
-            $robotId = StringHelper::asSlug($robot);
+            $robotId = $this->getRobotId($robot);
 
             if ($this->robotExists($robot)) {
                 if (!isset($this->disallowRules[$robotId]) || !is_array($this->disallowRules[$robotId])) {
@@ -252,6 +278,56 @@
 
             return false;
         }
+
+        /**
+         * @param string $robot
+         *
+         * @return string
+         */
+        public function getRobotId($robot)
+        {
+            if ($robot == '*') {
+                $robot = 'all';
+            }
+
+            $robotId = StringHelper::asSlug($robot);
+
+            return $robotId;
+        }
+
+        /**
+         * @param string $robotId
+         *
+         * @return string
+         */
+        public function getRobotName($robotId)
+        {
+            if ($robotId == '*') {
+                $robotId = 'all';
+            }
+
+            if (isset($this->robots[$robotId])) {
+                return $this->robots[$robotId];
+            }
+
+            return $this->robots['all'];
+        }
+
+        /**
+         * @return array
+         */
+        public function getRobotsData()
+        {
+            return [
+                'disallowAllRobots' => $this->disallowAllRobots,
+                'allowAllRobots'    => $this->allowAllRobots,
+                'useSitemap'        => $this->useSitemap,
+                'sitemapFile'       => $this->sitemapFile,
+                'allowRules'        => $this->allowRules,
+                'disallowRules'     => $this->disallowRules,
+                'robotsModule'      => $this
+            ];
+        }
         #endregion
 
         #region Verifications
@@ -263,7 +339,7 @@
          */
         public function robotExists($robot, $create = true)
         {
-            $robotId = StringHelper::asSlug($robot);
+            $robotId = $this->getRobotId($robot);
 
             if (!isset($this->robots[$robotId])) {
                 if ((bool)$create) {
