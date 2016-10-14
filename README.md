@@ -29,6 +29,8 @@ or add
 
 to the `require` section of your application's `composer.json` file.
 
+## Usage
+
 * Configure the `cache` component of your application's configuration file, for example:
 
 ```php
