@@ -10,7 +10,7 @@
     "php"
   ],
   "license": "BSD-3-Clause",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "authors": [
     {
       "name": "Jonatas Sas",
@@ -35,7 +35,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/jsas-development/yii2-nox-robots"
+      "url": "https://github.com/nox-it/yii2-nox-robots"
     }
   ]
 }
