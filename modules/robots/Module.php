@@ -3,6 +3,7 @@
     namespace nox\modules\robots;
 
     use nox\helpers\StringHelper;
+    use Yii;
     use yii\base\InvalidConfigException;
 
     /**
@@ -13,34 +14,14 @@
     class Module extends \yii\base\Module
     {
         /**
-         * @var string
+         * @var array
          */
-        public $controllerNamespace = 'nox\modules\robots\controllers';
-
-        /**
-         * @var string
-         */
-        public $viewPath = '@nox-it/robots/views';
-
-        /**
-         * @var string
-         */
-        public $layout = false;
-
-        /**
-         * @var string
-         */
-        public $defaultRoute = 'default/index';
+        public array $settings = [];
 
         /**
          * @var array
          */
-        public $settings = [];
-
-        /**
-         * @var array
-         */
-        protected $defaultSettings = [
+        protected array $defaultSettings = [
             'disallowAllRobots' => false,
             'allowAllRobots'    => false,
             'useSitemap'        => true,
@@ -53,37 +34,37 @@
         /**
          * @var bool
          */
-        protected $allowAllRobots = false;
+        protected bool $allowAllRobots = false;
 
         /**
          * @var bool
          */
-        protected $disallowAllRobots = false;
+        protected bool $disallowAllRobots = false;
 
         /**
          * @var bool
          */
-        protected $useSitemap = true;
+        protected bool $useSitemap = true;
 
         /**
          * @var string
          */
-        protected $sitemapFile = 'sitemap.xml';
+        protected string $sitemapFile = 'sitemap.xml';
 
         /**
          * @var array
          */
-        protected $allowRules = [];
+        protected array $allowRules = [];
 
         /**
          * @var array
          */
-        protected $disallowRules = [];
+        protected array $disallowRules = [];
 
         /**
          * @var array
          */
-        protected $robots = [
+        protected array $robots = [
             'all'                  => '*',
             'googlebot'            => 'Googlebot',
             'googlebot-mobile'     => 'Googlebot-Mobile',
@@ -97,14 +78,22 @@
         ];
 
         #region Initialization
+
         /**
          * @inheritdoc
+         *
+         * @throws InvalidConfigException
          */
         public function init()
         {
+            $this->controllerNamespace = 'nox\modules\robots\controllers';
+            $this->viewPath            = '@nox-it/robots/views';
+            $this->layout              = false;
+            $this->defaultRoute        = 'default/index';
+
             parent::init();
 
-            \Yii::setAlias('@nox-it/robots', __DIR__);
+            Yii::setAlias('@nox-it/robots', __DIR__);
 
             $this->verifyComponentRequirements();
         }
@@ -290,9 +279,7 @@
                 $robot = 'all';
             }
 
-            $robotId = StringHelper::asSlug($robot);
-
-            return $robotId;
+            return StringHelper::asSlug($robot);
         }
 
         /**
