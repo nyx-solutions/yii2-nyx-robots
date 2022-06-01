@@ -1,7 +1,7 @@
 <?php
 
-    use nox\helpers\UrlHelper;
-    use nox\modules\robots\Module;
+    use nyx\helpers\UrlHelper;
+    use nyx\modules\robots\Module;
     use yii\web\View;
 
     /**

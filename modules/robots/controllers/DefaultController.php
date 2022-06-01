@@ -1,9 +1,9 @@
 <?php
 
-    namespace nox\modules\robots\controllers;
+    namespace nyx\modules\robots\controllers;
 
-    use nox\modules\robots\Module;
-    use nox\mvc\web\Controller;
+    use nyx\modules\robots\Module;
+    use nyx\mvc\web\Controller;
     use Yii;
     use yii\web\Response;
 

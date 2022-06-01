@@ -1,15 +1,15 @@
 <?php
 
-    namespace nox\modules\robots;
+    namespace nyx\modules\robots;
 
-    use nox\helpers\StringHelper;
+    use nyx\helpers\StringHelper;
     use Yii;
     use yii\base\InvalidConfigException;
 
     /**
      * Class Module
      *
-     * @package nox\modules\robots
+     * @package nyx\modules\robots
      */
     class Module extends \yii\base\Module
     {
@@ -86,14 +86,14 @@
          */
         public function init()
         {
-            $this->controllerNamespace = 'nox\modules\robots\controllers';
-            $this->viewPath            = '@nox-it/robots/views';
+            $this->controllerNamespace = 'nyx\modules\robots\controllers';
+            $this->viewPath            = '@nyx-solutions/robots/views';
             $this->layout              = false;
             $this->defaultRoute        = 'default/index';
 
             parent::init();
 
-            Yii::setAlias('@nox-it/robots', __DIR__);
+            Yii::setAlias('@nyx-solutions/robots', __DIR__);
 
             $this->verifyComponentRequirements();
         }
