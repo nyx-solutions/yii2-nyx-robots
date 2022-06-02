@@ -1,4 +1,4 @@
-Yii PHP Framework Version 2 / NOX Robots.txt Generator Module
+Yii PHP Framework Version 2 / NYX Robots.txt Generator Module
 =============================================================
 
 Yii2 Module for automatically generating the [robots.txt](http://www.robotstxt.org/) file.
